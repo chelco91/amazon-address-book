@@ -15,7 +15,7 @@
 				<div class="persona">
 					<div class="top">
 						<div class="width33">
-							<img src="images/trevor-rabin.jpg" height="50px" width="80px"/>
+							<img src="images/trevor-rabin.jpg" height="100px" width="160px"/>
 							<p><strong>Name: </strong>Trevor Rabin</p>
 							<p><strong>Age: </strong>35</p>
 						</div>
@@ -34,12 +34,12 @@
 					<div class="bottom">
 						<div class="width33">
 							<p><strong>Attitudes and Behaviors: </strong>
-								Trevor loves to make reading suggestions to all his family and friends. He will typically send out a few books every week.
+								Trevor loves to make reading suggestions to all his family and friends. He will typically send out a few books every week to them.
 							</p>
 						</div>
 						<div class="width33">
 							<p><strong>Frustrations and Needs: </strong>
-								Trevor has lots of trouble remembering which friend lives where. He needs someplace to store lots of different shipping addresses. Also his shipping and billing address don't match very often.
+								Trevor has lots of trouble remembering which friend lives where. He needs some place to store lots of different shipping addresses. Also his shipping and billing address don't match very often.
 							</p>
 						</div>
 						<div class="width33">
@@ -61,6 +61,62 @@
 						<li>System populates order with a default shipping and billing address.</li>
 						<li>User chooses to use default values.</li>
 					</ol>
+				</div>
+				<div class="erd">
+					<h2>Entity Relational Diagram</h2>
+					<img src="images/amazon-address-book.jpg" alt="Amazon Address Book ERD">
+				</div>
+				<div class="ddl">
+					<h2>Data Description Language</h2>
+					<pre>
+DROP TABLE IF EXISTS orderAddress;
+DROP TABLE IF EXISTS purchaseOrder;
+DROP TABLE IF EXISTS address;
+DROP TABLE IF EXISTS profile;
+
+CREATE TABLE profile (
+	profileId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	password VARCHAR(32) NOT NULL,
+	email VARCHAR(128) NOT NULL,
+	UNIQUE(email),
+	PRIMARY KEY(profileId)
+);
+
+CREATE TABLE address (
+	addressId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	profileId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	streetNumber VARCHAR(65) NOT NULL,
+	city VARCHAR(32) NOT NULL,
+	state VARCHAR(2) NOT NULL,
+	zip SMALLINT NOT NULL,
+	phoneNumber VARCHAR(32) NOT NULL,
+	INDEX(profileId),
+	PRIMARY KEY(addressId),
+	FOREIGN KEY(profileId) REFERENCES profile(profileId)
+);
+
+CREATE TABLE purchaseOrder (
+	orderId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	profileId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	totalItems SMALLINT UNSIGNED NOT NULL,
+	totalPrice DOUBLE NOT NULL,
+	shippingCost DOUBLE NOT NULL,
+	deliveryDate DATE NOT NULL,
+	INDEX(profileId),
+	PRIMARY KEY(orderId),
+	FOREIGN KEY(profileId) REFERENCES profile(profileId)
+);
+
+CREATE TABLE orderAddress (
+	addressId INT UNSIGNED NOT NULL,
+	orderId INT UNSIGNED NOT NULL,
+	formOfPayment VARCHAR(40) NOT NULL,
+	INDEX(addressId),
+	INDEX(orderId),
+	FOREIGN KEY(addressId) REFERENCES address(addressId),
+	FOREIGN KEY(orderId) REFERENCES purchaseOrder(orderId)
+); 
+					</pre>
 				</div>
 			</main>
 		</div>

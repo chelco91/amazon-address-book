@@ -28,7 +28,18 @@ header {
 	vertical-align: middle;
 	width: 33%;
 }
+.width33 img {
+	float: left;
+}
 .useCases {
+	padding: 10px;
+	margin: 10px auto;
+}
+.erd {
+	padding: 10px;
+	margin: 10px auto;
+}
+.ddl {
 	padding: 10px;
 	margin: 10px auto;
 }
