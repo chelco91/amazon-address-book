@@ -59,7 +59,16 @@
 						<li>User then clicks "Check Out" to finalize their purchases.</li>
 						<li>User is prompted for a shipping address to send products to.</li>
 						<li>System populates order with a default shipping and billing address.</li>
-						<li>User chooses to use default values.</li>
+						<li>
+							<ol>
+								<li>User chooses to use default values.</li>
+								<li>User chooses to use an address from his address book.</li>
+								<ol>
+									<li>User clicks the change button on his address</li>
+									<li>User clicks "ship to address" on one of his additional addresses</li>
+								</ol>
+							</ol>
+						</li>
 					</ol>
 				</div>
 				<div class="erd">
@@ -84,7 +93,7 @@ CREATE TABLE profile (
 
 CREATE TABLE address (
 	addressId INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	profileId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	profileId INT UNSIGNED NOT NULL,
 	streetNumber VARCHAR(65) NOT NULL,
 	city VARCHAR(32) NOT NULL,
 	state VARCHAR(2) NOT NULL,
@@ -97,7 +106,7 @@ CREATE TABLE address (
 
 CREATE TABLE purchaseOrder (
 	orderId INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	profileId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	profileId INT UNSIGNED NOT NULL,
 	totalItems SMALLINT UNSIGNED NOT NULL,
 	totalPrice DOUBLE NOT NULL,
 	shippingCost DOUBLE NOT NULL,
