@@ -1,5 +1,7 @@
 <?php
 
+require_once("etc/apache2/data-design/encrypted-config.php");
+
 /**
  * Small Cross Section of Amazon's Address Book
  *
@@ -33,6 +35,7 @@ class Profile {
 	 * @param string $newPasswordHash string containing profile's passwordHash
 	 * @throws InvalidArgumentException if data types are not valid
 	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers)
+	 * @throws Exception if some other exception is thrown
 	 **/
 	public function __construct($newProfileId, $newEmail, $newPasswordHash) {
 		try {
@@ -45,6 +48,9 @@ class Profile {
 		} catch(RangeException $range) {
 			// rethrow the exception to the caller
 			throw(new RangeException($range->getMessage(), 0, $range));
+		} catch(Exception $exception) {
+			// rethrow the generic exception to the caller
+			throw(new Exception($exception->getMessage(), 0, $exception));
 		}
 	}
 
@@ -65,6 +71,12 @@ class Profile {
 	 * @throws RangeException if $newProfileId is not positive
 	 **/
 	public function setProfileId($newProfileId) {
+		// base case: if the profileId is null, this is a new profile without a mySQL assigned id (yet)
+		if($newProfileId === null) {
+			$this->profileId = null;
+			return;
+		}
+
 		// verify the profile id is valid
 		$newProfileId = filter_var($newProfileId, FILTER_VALIDATE_INT);
 		if($newProfileId === false) {
@@ -146,13 +158,23 @@ class Profile {
 
 	/************************************* mySQL *************************************************************/
 
+
 	/**
 	 * inserts this Profile into mySQL
 	 *
 	 * @param PDO $pdo pointer to PDO connection, by reference
 	 * @throws PDOException when mySQL related errors occur
-	 **//*
+	 **/
 	public function insert(PDO &$pdo) {
+		// connect to mySQL
+		try {
+			$pdo = connectToEncryptedMySQL("etc/apache2/data-design/ccollopy.ini");
+		} catch(PDOException $pdoException) {
+			// handle PDO errors
+		} catch(Exception $exception) {
+			// handle other errors
+		}
+
 		// enforce the profileId is null (i.e., don't insert a profile that already exists)
 		if($this->profileId !== null) {
 			throw(new PDOException("not a new profile"));
@@ -171,13 +193,22 @@ class Profile {
 	}
 
 
-	*//**
+	/**
 	 * deletes this Profile from mySQL
 	 *
 	 * @param PDO $pdo pointer to PDO connection, by reference
 	 * @throws PDOException when mySQL related errors occur
-	 **//*
+	 **/
 	public function delete(PDO &$pdo) {
+		// connect to mySQL
+		try {
+			$pdo = connectToEncryptedMySQL("etc/apache2/data-design/ccollopy.ini");
+		} catch(PDOException $pdoException) {
+			// handle PDO errors
+		} catch(Exception $exception) {
+			// handle other errors
+		}
+
 		// enforce the profileId is not null (i.e., don't delete a profile that hasn't been inserted)
 		if($this->profileId === null) {
 			throw(new PDOException("unable to delete a profile that does not exist"));
@@ -192,13 +223,22 @@ class Profile {
 		$statement->execute($parameters);
 	}
 
-	*//**
+	/**
 	 * updates this Profile in mySQL
 	 *
 	 * @param PDO $pdo pointer to PDO connection, by reference
 	 * @throws PDOException when mySQL related errors occur
-	 **//*
+	 **/
 	public function update(PDO &$pdo) {
+		// connect to mySQL
+		try {
+			$pdo = connectToEncryptedMySQL("etc/apache2/data-design/ccollopy.ini");
+		} catch(PDOException $pdoException) {
+			// handle PDO errors
+		} catch(Exception $exception) {
+			// handle other errors
+		}
+
 		// enforce the profileId is not null (i.e., don't update a profile that hasn't been inserted)
 		if($this->profileId === null) {
 			throw(new PDOException("unable to update a profile that does not exist"));
@@ -211,5 +251,5 @@ class Profile {
 		// bind the member variables to the place holders in the template
 		$parameters = array("profileId" => $this->profileId, "email" => $this->email, "passwordHash" => $this->passwordHash);
 		$statement->execute($parameters);
-	}*/
+	}
 }
